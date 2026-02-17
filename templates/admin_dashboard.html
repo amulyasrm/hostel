@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="animate">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem;">
+        <h1 style="color: var(--text-dark);">Hostel Queen <span style="color: var(--vibrant-purple);">HQ</span> 👑</h1>
+        <div class="card card-green" style="padding: 1.5rem 3rem; margin-bottom: 0;">
+            <p style="font-size: 0.8rem; font-weight: 700; color: #888;">TOTAL REVENUE 💸</p>
+            <h2 style="color: var(--vibrant-green); font-size: 2rem;">₹{{ revenue }}</h2>
+        </div>
+    </div>
+
+    <!-- Bookings Management -->
+    <div class="card card-blue">
+        <h2 style="color: var(--vibrant-blue); margin-bottom: 2rem;">Active Residents 🏠</h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="text-align: left; border-bottom: 2px solid #eee;">
+                        <th style="padding: 1rem; color: var(--vibrant-blue);">Resident</th>
+                        <th style="padding: 1rem; color: var(--vibrant-blue);">Room #</th>
+                        <th style="padding: 1rem; color: var(--vibrant-blue);">Start Date</th>
+                        <th style="padding: 1rem; color: var(--vibrant-blue);">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr style="border-bottom: 1px solid #f9f9f9;">
+                        <td style="padding: 1rem; font-weight: 600;">{{ b.user_name }}</td>
+                        <td style="padding: 1rem;">
+                            Room {{ b.room_number }}
+                            <small style="color: #888; display: block; font-size: 0.6rem;">({{ b.available_beds }}/{{
+                                b.total_beds }} Free)</small>
+                        </td>
+                        <td style="padding: 1rem;">{{ b.start_date }}</td>
+                        <td style="padding: 1rem;">
+                            <form action="/admin/update_booking/{{ b.id }}" method="POST"
+                                style="display: flex; gap: 5px;">
+                                <select name="status"
+                                    style="padding: 5px; border-radius: 10px; border: 1px solid #eee; font-size: 0.7rem;">
+                                    <option value="Confirmed" {% if b.status=='Confirmed' %}selected{% endif %}>
+                                        Confirmed</option>
+                                    <option value="Staying" {% if b.status=='Staying' %}selected{% endif %}>Staying
+                                    </option>
+                                    <option value="Vacated" {% if b.status=='Vacated' %}selected{% endif %}>Vacated
+                                    </option>
+                                    <option value="Kicked Out" {% if b.status=='Kicked Out' %}selected{% endif %}>Kicked
+                                        Out</option>
+                                </select>
+                                <button type="submit" class="btn bg-blue"
+                                    style="padding: 5px 10px; font-size: 0.6rem; border-radius: 8px; text-transform:none;">Set</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Complaints Management -->
+    <div class="card card-orange">
+        <h2 style="color: var(--vibrant-orange); margin-bottom: 2rem;">Issue Reports 📣</h2>
+        <div class="room-grid">
+            {% for c in complaints %}
+            <div
+                style="padding: 1.5rem; border: 2px solid #fff5f8; border-radius: 20px; background: {% if c.status == 'Resolved' %}#f8f9fa{% else %}white{% endif %}; position: relative; border-top: 5px solid var(--vibrant-orange);">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div>
+                        <h3 style="color: var(--text-dark);">{{ c.title }}</h3>
+                        <p style="font-size: 0.8rem; color: var(--vibrant-orange); font-weight: 700;">From: {{
+                            c.user_name
+                            }}</p>
+                    </div>
+                    <span class="badge {% if c.status == 'Resolved' %}badge-available{% else %}bg-orange{% endif %}"
+                        style="border:none;">{{
+                        c.status }}</span>
+                </div>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">{{ c.description }}</p>
+                {% if c.status == 'Pending' %}
+                <a href="/admin/resolve/{{ c.id }}" class="btn bg-orange"
+                    style="padding: 8px 20px; font-size: 0.7rem; border-radius: 10px; text-transform:none;">Mark
+                    Resolved ✅</a>
+                {% endif %}
+                <p style="font-size: 0.7rem; color: #aaa; margin-top: 1rem;">Reported: {{ c.created_at }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

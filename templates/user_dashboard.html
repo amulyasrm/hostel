@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks - Enterprise System ✨</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <nav>
+        <div class="logo">My Task Palette 🎨</div>
+        <div>
+            <span style="margin-right: 20px;">Welcome, {{ session['name'] }}! 🌸</span>
+            <a href="/logout" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.8rem;">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 style="color: #ff69b4; margin-bottom: 2rem;">Tasks for You, Sweetie! 🍬</h1>
+
+        <div class="task-list">
+            {% if tasks %}
+            {% for task in tasks %}
+            <div class="card task-item" onclick="window.location.href='/task/{{ task.id }}'" style="cursor: pointer;">
+                <div>
+                    <h3>{{ task.title }}</h3>
+                    <p style="font-size: 0.9rem; color: #888;">Status needs your magic touch ✨</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="status-badge status-{{ task.status }}">{{ task.status }}</span>
+                    <p style="font-size: 0.8rem; margin-top: 5px;">Deadline: {{ task.deadline }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="card" style="text-align: center; padding: 3rem;">
+                <p style="font-size: 1.2rem; color: #888;">No tasks assigned yet! Time for some self-care? ☕️🍰</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

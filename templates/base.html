@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PG Queen 🌈{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <nav>
+        <div class="logo">PG Queen 🌈</div>
+        <div>
+            <a href="/"
+                style="margin-right: 20px; text-decoration: none; color: var(--vibrant-pink); font-weight: 600;">Explore
+                Rooms</a>
+            {% if session.get('user_id') %}
+            <a href="/dashboard"
+                style="margin-right: 20px; text-decoration: none; color: var(--vibrant-purple); font-weight: 600;">My
+                Dashboard ✨</a>
+            <a href="/logout" class="btn btn-rainbow" style="padding: 8px 20px;">Logout</a>
+            {% else %}
+            <a href="/login"
+                style="margin-right: 20px; text-decoration: none; color: var(--vibrant-pink); font-weight: 600;">Login</a>
+            <a href="/register" class="btn btn-rainbow" style="padding: 8px 20px;">Join Us</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="card animate"
+            style="padding: 1rem; background: var(--rainbow-active); color: white; margin-bottom: 2rem; border-radius: 15px;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Hidden Admin Hint Button -->
+    <div class="admin-trigger" onclick="toggleAdminDetails()">✨</div>
+    <div id="adminDetails" class="admin-details">
+        <p style="font-weight: 800; color: var(--vibrant-pink);">Secret Access 🤫</p>
+        <p style="font-size: 0.8rem;">Admin: admin@example.com</p>
+        <p style="font-size: 0.8rem;">Pass: admin123</p>
+    </div>
+
+    <script>
+        function toggleAdminDetails() {
+            var x = document.getElementById("adminDetails");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+    </script>
+</body>
+
+</html>

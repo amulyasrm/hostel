@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="animate" style="text-align: center; margin-bottom: 4rem;">
+    <h1
+        style="font-size: 3.5rem; background: var(--rainbow-active); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">
+        Find Your Perfect Room 🌈</h1>
+    <p style="color: #666; font-size: 1.2rem;">Luxury sharing rooms for every queen ✨</p>
+</div>
+
+<div class="card animate" style="padding: 1.5rem; text-align: center; margin-bottom: 3rem;">
+    <form action="/" method="GET" style="display: flex; justify-content: center; gap: 1rem; align-items: center;">
+        <label style="margin-bottom: 0;">Filter Rooms:</label>
+        <select name="type" style="width: auto; padding: 10px 40px;">
+            <option value="all">All Types</option>
+            <option value="1-sharing">1-Sharing (Single)</option>
+            <option value="2-sharing">2-Sharing</option>
+            <option value="3-sharing">3-Sharing</option>
+            <option value="4-sharing">4-Sharing</option>
+        </select>
+        <button type="submit" class="btn btn-rainbow" style="padding: 12px 30px;">Search 🔍</button>
+    </form>
+</div>
+
+<div class="room-grid">
+    {% for room in rooms %}
+    {% set card_color = loop.cycle('pink', 'blue', 'purple', 'orange', 'green', 'yellow') %}
+    <div class="card card-{{ card_color }} animate"
+        style="padding: 0; overflow: hidden; border-bottom: none; border-left: none; border-right: none;">
+        <div class="bg-{{ card_color }}"
+            style="height: 150px; display: flex; align-items: center; justify-content: center;">
+            <div style="text-align: center;">
+                <h2 style="font-size: 2.5rem; margin: 0;">{{ room.room_number }}</h2>
+                <p style="margin: 0; font-size: 0.8rem; font-weight: 700; opacity: 0.8;">ROOM UNIT</p>
+            </div>
+        </div>
+        <div style="padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="color: var(--text-dark);">{{ room.type }}</h3>
+                <span class="badge {% if room.available_beds > 0 %}badge-available{% else %}badge-full{% endif %}">
+                    {% if room.available_beds > 0 %}{{ room.available_beds }} Beds Left{% else %}Full{% endif %}
+                </span>
+            </div>
+            <p
+                style="font-size: 1.5rem; font-weight: 800; color: var(--vibrant-{{ card_color }}); margin-bottom: 1.5rem;">
+                ₹{{ room.price_per_month }}/mo</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p style="color: #888; font-size: 0.8rem;">Modern Setup • WiFi • Safe</p>
+                <a href="/book/{{ room.id }}" class="btn bg-{{ card_color }}"
+                    style="padding: 10px 20px; font-size: 0.7rem; border-radius: 12px; text-transform: none;">Book
+                    Now</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

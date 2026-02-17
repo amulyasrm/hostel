@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="animate">
+    <h1 style="margin-bottom: 2rem; color: var(--text-dark);">Hello, <span class="rainbow-anim"
+            style="background: var(--rainbow-active); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{{
+            session['name'] }}!</span> ✨</h1>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+        <div>
+            <!-- My Bookings -->
+            <div class="card card-blue">
+                <h2 style="color: var(--vibrant-blue); margin-bottom: 1.5rem;">Active Stay 🏠</h2>
+                {% if active_stays %}
+                {% for b in active_stays %}
+                <div
+                    style="padding: 1.5rem; border: 2px solid #eee; border-radius: 20px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="color: var(--text-dark);">Room {{ b.room_number }} ({{ b.type }})</h3>
+                        <p style="color: #888;">Started: {{ b.start_date }} | Duration: {{ b.duration_months }} months
+                        </p>
+                    </div>
+                    <span class="badge bg-blue" style="border:none;">{{ b.status }}</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="color: #888;">No active stay. <a href="/" style="color: var(--vibrant-pink);">Find a room
+                        now!</a></p>
+                {% endif %}
+            </div>
+
+            <div class="card card-purple">
+                <h2 style="color: var(--vibrant-purple); margin-bottom: 1.5rem;">Stay History 📖</h2>
+                {% if stay_history %}
+                {% for b in stay_history %}
+                <div
+                    style="padding: 1rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p style="font-weight: 600; font-size: 0.9rem;">Room {{ b.room_number }}</p>
+                        <small style="color: #999;">{{ b.start_date }} ({{ b.duration_months }} mo)</small>
+                    </div>
+                    <span class="badge {% if b.status == 'Vacated' %}badge-available{% else %}badge-full{% endif %}"
+                        style="font-size: 0.6rem;">{{ b.status }}</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="color: #bbb; font-size: 0.8rem; text-align: center;">No history yet. 🌸</p>
+                {% endif %}
+            </div>
+
+            <!-- Complaints -->
+            <div class="card card-orange">
+                <h2 style="color: var(--vibrant-orange); margin-bottom: 1.5rem;">Complaints & Help 🛠️</h2>
+                {% for c in complaints %}
+                <div
+                    style="padding: 1rem; background: #fffbf5; border-radius: 15px; margin-bottom: 1rem; border-left: 5px solid var(--vibrant-orange);">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h4 style="color: var(--text-dark);">{{ c.title }}</h4>
+                        <span
+                            style="font-size: 0.8rem; font-weight: 700; color: {% if c.status == 'Resolved' %}var(--vibrant-green){% else %}var(--vibrant-orange){% endif %};">{{
+                            c.status }}</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">{{ c.description }}</p>
+                    <small style="color: #aaa;">{{ c.created_at }}</small>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div>
+            <!-- Raise Complaint Form -->
+            <div class="card card-pink">
+                <h2 style="color: var(--vibrant-pink); margin-bottom: 1.5rem;">Quick Report 📣</h2>
+                <form action="/complaint" method="POST">
+                    <div class="form-group">
+                        <label>Issue Title</label>
+                        <input type="text" name="title" placeholder="Water leakage, WiFi down..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" rows="3" placeholder="Tell us more sweetie..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn bg-pink"
+                        style="width: 100%; border-radius: 15px; text-transform:none;">Submit Issue ✨</button>
+                </form>
+            </div>
+
+            <!-- Payments -->
+            <div class="card card-green">
+                <h2 style="color: var(--vibrant-green); margin-bottom: 1.5rem;">Rent Payments 💸</h2>
+                {% if payments %}
+                {% for p in payments %}
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem;">
+                    <span>{{ p.month }}</span>
+                    <span
+                        style="font-weight: 700; color: {% if p.status == 'Paid' %}var(--vibrant-green){% else %}#ff4757{% endif %};">₹{{
+                        p.amount }} ({{ p.status }})</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p style="text-align: center; color: #888; font-size: 0.9rem;">No payment history yet! 🌸</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

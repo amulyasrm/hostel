@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details - Enterprise System ✨</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .comment-box {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #fecce0;
+        }
+
+        .comment-meta {
+            font-size: 0.8rem;
+            color: #ff69b4;
+            font-weight: 600;
+        }
+
+        .comment-text {
+            margin-top: 5px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">Task Magic Details ✨</div>
+        <a href="/" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.8rem;">Back to Dashboard</a>
+    </nav>
+
+    <div class="container" style="max-width: 800px;">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+                <h1 style="color: #ff69b4;">{{ task.title }}</h1>
+                <span class="status-badge status-{{ task.status }}">{{ task.status }}</span>
+            </div>
+
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Assigned by: {{ task.creator_name }} | Deadline: <strong>{{ task.deadline }}</strong>
+            </p>
+
+            <div style="background: #fff5f8; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+                <p style="line-height: 1.6;">{{ task.description or 'No description provided.' }}</p>
+            </div>
+
+            <!-- Update Status Section -->
+            <form action="/task/{{ task.id }}" method="POST"
+                style="display: flex; gap: 1rem; align-items: end; margin-bottom: 2rem; border-top: 2px dashed #fecce0; padding-top: 2rem;">
+                <input type="hidden" name="action" value="update_status">
+                <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                    <label>Update My Status 🎀</label>
+                    <select name="status">
+                        <option value="Pending" {% if task.status=='Pending' %}selected{% endif %}>Pending</option>
+                        <option value="In Progress" {% if task.status=='In Progress' %}selected{% endif %}>In Progress
+                        </option>
+                        <option value="Completed" {% if task.status=='Completed' %}selected{% endif %}>Completed
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update ✨</button>
+            </form>
+
+            <!-- Comments Section -->
+            <div style="border-top: 2px dashed #fecce0; padding-top: 2rem;">
+                <h2 style="color: #ff69b4; margin-bottom: 1rem;">Comments 🍬</h2>
+
+                <div style="margin-bottom: 2rem;">
+                    {% for comment in comments %}
+                    <div class="comment-box">
+                        <div class="comment-meta">{{ comment.user_name }} • {{ comment.created_at }}</div>
+                        <div class="comment-text">{{ comment.comment }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <form action="/task/{{ task.id }}" method="POST">
+                    <input type="hidden" name="action" value="add_comment">
+                    <div class="input-group">
+                        <textarea name="comment" rows="2" placeholder="Add a sweet comment..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="background: var(--secondary-purple);">Send
+                        💌</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
