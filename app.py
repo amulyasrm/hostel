@@ -6,12 +6,19 @@ import os
 
 app = Flask(__name__)
 app.secret_key = 'rainbow_sparkle_pg_secret'
-DB_NAME = 'pg_management.db'
+
+# Absolute path for database to avoid "Page Not Found" or "500 Error" on deployment
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, 'pg_management.db')
 
 def get_db():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
-    return conn
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        conn.row_factory = sqlite3.Row
+        return conn
+    except Exception as e:
+        print(f"DATABASE CONNECTION ERROR: {e}")
+        return None
 
 def login_required(f):
     @wraps(f)
@@ -58,6 +65,7 @@ def login():
             session['role'] = user['role']
             return redirect(url_for('dashboard'))
         else:
+            db.close()
             flash('Oops! Check your email or password sweetie! 💖')
     return render_template('login.html')
 
@@ -84,10 +92,17 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    if session['role'] == 'ADMIN':
+    if session.get('role') == 'ADMIN':
         return redirect(url_for('admin_dashboard'))
     
     db = get_db()
+    user = db.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    if not user:
+        db.close()
+        session.clear()
+        return redirect(url_for('login'))
+
     # Categorize bookings: Active (Staying, Confirmed) vs History (Vacated, Kicked Out)
     all_bookings = db.execute('''
         SELECT b.*, r.room_number, r.type 
@@ -117,7 +132,8 @@ def book_room(room_id):
                        (session['user_id'], room_id, start_date, duration))
             db.execute('UPDATE rooms SET available_beds = available_beds - 1 WHERE id = ?', (room_id,))
             db.commit()
-            flash('Room booked! Welcome home! �')
+            flash('Room booked! Welcome home! ✨')
+            db.close()
             return redirect(url_for('dashboard'))
         else:
             flash('Sorry, this room is full! 😢')
