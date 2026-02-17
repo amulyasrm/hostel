@@ -12,18 +12,18 @@
     <nav>
         <div class="logo">PG Queen 🌈</div>
         <div>
-            <a href="/"
+            <a href="{{ url_for('index') }}"
                 style="margin-right: 20px; text-decoration: none; color: var(--vibrant-pink); font-weight: 600;">Explore
                 Rooms</a>
             {% if session.get('user_id') %}
-            <a href="/dashboard"
+            <a href="{{ url_for('dashboard') }}"
                 style="margin-right: 20px; text-decoration: none; color: var(--vibrant-purple); font-weight: 600;">My
                 Dashboard ✨</a>
-            <a href="/logout" class="btn btn-rainbow" style="padding: 8px 20px;">Logout</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-rainbow" style="padding: 8px 20px;">Logout</a>
             {% else %}
-            <a href="/login"
+            <a href="{{ url_for('login') }}"
                 style="margin-right: 20px; text-decoration: none; color: var(--vibrant-pink); font-weight: 600;">Login</a>
-            <a href="/register" class="btn btn-rainbow" style="padding: 8px 20px;">Join Us</a>
+            <a href="{{ url_for('register') }}" class="btn btn-rainbow" style="padding: 8px 20px;">Join Us</a>
             {% endif %}
         </div>
     </nav>

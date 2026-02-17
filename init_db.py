@@ -1,8 +1,13 @@
 import sqlite3
 import hashlib
+import os
 
 def init_db():
-    conn = sqlite3.connect('pg_management.db')
+    # Use absolute path so app.py and init_db.py always look at the same file
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(base_dir, 'pg_management.db')
+    
+    conn = sqlite3.connect(db_path)
     c = conn.cursor()
 
     c.execute('DROP TABLE IF EXISTS users')

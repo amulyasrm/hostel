@@ -4,7 +4,7 @@
 <div class="animate" style="max-width: 500px; margin: 4rem auto;">
     <div class="card card-pink" style="text-align: center;">
         <h1 style="color: var(--vibrant-pink); font-weight: 800; margin-bottom: 2rem;">Join PG Queen 🌈</h1>
-        <form action="/register" method="POST">
+        <form action="{{ url_for('register') }}" method="POST">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" name="name" placeholder="Aurora Princess" required>
@@ -20,7 +20,7 @@
             <button type="submit" class="btn bg-pink"
                 style="width: 100%; border-radius: 15px; text-transform:none;">Create Account ✨</button>
         </form>
-        <p style="margin-top: 2rem; color: #888;">Already have an account? <a href="/login"
+        <p style="margin-top: 2rem; color: #888;">Already have an account? <a href="{{ url_for('login') }}"
                 style="color: var(--vibrant-pink); font-weight: 600;">Login here 💖</a></p>
     </div>
 </div>
