@@ -14,13 +14,15 @@ app = Flask(__name__,
 app.secret_key = 'rainbow_sparkle_pg_secret'
 
 def get_db():
-    try:
-        conn = sqlite3.connect(DB_NAME)
-        conn.row_factory = sqlite3.Row
-        return conn
-    except Exception as e:
-        print(f"DATABASE CONNECTION ERROR: {e}")
-        return None
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# Proactive DB Check for Deployment
+if not os.path.exists(DB_NAME):
+    from init_db import init_db
+    print("Database missing... Initializing now! 🌈")
+    init_db()
 
 def login_required(f):
     @wraps(f)
