@@ -4,12 +4,14 @@ import hashlib
 from functools import wraps
 import os
 
-app = Flask(__name__)
-app.secret_key = 'rainbow_sparkle_pg_secret'
-
 # Absolute path for database to avoid "Page Not Found" or "500 Error" on deployment
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, 'pg_management.db')
+
+app = Flask(__name__, 
+            static_folder=os.path.join(BASE_DIR, 'static'),
+            template_folder=os.path.join(BASE_DIR, 'templates'))
+app.secret_key = 'rainbow_sparkle_pg_secret'
 
 def get_db():
     try:
